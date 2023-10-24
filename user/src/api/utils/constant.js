@@ -2,8 +2,8 @@ const responseMessage = {
   ERR_MSG_ISSUE_IN_SIGNUP_API: "Oops! Something went wrong in Sign up API",
   ERR_MSG_ISSUE_IN_LOGIN_API: "Oops! Something went wrong in Log In API",
   ERR_MSG_ISSUE_IN_LOGOUT_API: "Oops! Something went wrong in Log Out API",
-  ERR_MSG_ISSUE_IN_USER_DETAILS_API:
-    "Oops! Something went wrong in User Details API",
+  ERR_MSG_ISSUE_IN_TOKEN_VERIFICATION_API:
+    "Oops! Something went wrong in token verification API",
 
   //Error Message for Address Controller
   ERR_MSG_ISSUE_IN_ADD_ADDRESS_API:
@@ -20,6 +20,7 @@ const responseMessage = {
   BLACKLISTED_TOKEN: "Blacklisted Token.",
   TOKEN_NOT_FOUND: "Bearer Token was not provided.",
   UNAUTHORIZED: "Invalid request. You are not authorized.",
+  AUTHORIZED: "Token is Valid.",
   ACCESS_TOKEN_GENERATED: "Access Token Generated Successfully.",
 
   //User Session Controller

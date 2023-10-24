@@ -4,6 +4,7 @@ import {
   login,
   logout,
   generateToken,
+  verifyTokenRequest,
 } from "../api/controllers/UserSessionManagementController.js";
 import {
   verifyToken,
@@ -28,6 +29,8 @@ router.post("/signin", login);
 router.delete("/logout", verifyToken, logout);
 //Generate new token
 router.post("/refresh", verifyRefreshToken, generateToken);
+//Verify token
+router.post("/verify", verifyTokenRequest);
 
 /* ======================== Address Management Controller ===================================================== */
 //Add Address

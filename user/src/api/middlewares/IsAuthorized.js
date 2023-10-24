@@ -6,6 +6,7 @@ async function verifyToken(req, res, next) {
   try {
     // Bearer tokenstring
     const token = req.headers.authorization.split(" ")[1];
+    console.log("token", token, typeof token);
 
     if (!token) {
       return res.status(403).send({
@@ -14,6 +15,7 @@ async function verifyToken(req, res, next) {
     }
 
     const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    console.log(payload);
 
     req.accessToken = token;
     req.sessionData = payload;

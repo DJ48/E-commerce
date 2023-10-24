@@ -8,6 +8,7 @@ import {
   generateRefreshToken,
 } from "../utils/generateToken.js";
 import redisClient from "../../config/redisConnect.js";
+import jwt from "jsonwebtoken";
 
 /**
  * Controller for Signup / registration
@@ -227,4 +228,48 @@ const generateToken = async (req, res) => {
   }
 };
 
-export { signup, login, logout, generateToken };
+/**
+ * Controller for verifying Access Token
+ */
+
+const verifyTokenRequest = async (req, res) => {
+  try {
+    const token = req.body.token;
+
+    try {
+      const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+
+      // varify blacklisted access token.
+      const data = await redisClient.get("BL_" + payload.id.toString());
+      if (data === token) {
+        return res.status(200).json({
+          message: responseMessage.BLACKLISTED_TOKEN,
+          data: {
+            isValid: false,
+          },
+        });
+      }
+      return res.status(200).json({
+        message: responseMessage.AUTHORIZED,
+        data: {
+          isValid: true,
+          userId: payload.id,
+        },
+      });
+    } catch (error) {
+      return res.status(200).json({
+        message: responseMessage.INVALID_SESSION,
+        data: {
+          isValid: false,
+        },
+      });
+    }
+  } catch (err) {
+    console.error("Error while verifying token: ", err.message);
+    res.status(500).send({
+      message: responseMessage.ERR_MSG_ISSUE_IN_TOKEN_VERIFICATION_API,
+    });
+  }
+};
+
+export { signup, login, logout, generateToken, verifyTokenRequest };
