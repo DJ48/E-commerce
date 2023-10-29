@@ -1,7 +1,7 @@
 {
   "name": "product_service",
   "version": "1.0.0",
-  "description": "Product Service ",
+  "description": "Order Service ",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
@@ -18,6 +18,9 @@
     "joi": "^17.11.0",
     "lodash": "^4.17.21",
     "mongoose": "^7.6.3",
+    "nanoid": "^5.0.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.0.1"
   }
 }

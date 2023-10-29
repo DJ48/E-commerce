@@ -6,6 +6,7 @@ import {
   deleteProduct,
   fetchProductById,
   fetchProductList,
+  updateBulkProduct,
   updateProduct,
 } from "../api/controllers/ProductManagementController.js";
 
@@ -22,5 +23,7 @@ router.get("/product/list", verifyToken, fetchProductList);
 router.delete("/product/delete", verifyToken, deleteProduct);
 //Fetch Product By id
 router.get("/product/details", verifyToken, fetchProductById);
+//Bulk Product update
+router.put("/product/bulk/update", verifyToken, updateBulkProduct);
 
 export default router;

@@ -12,7 +12,6 @@ const addProduct = async (req, res) => {
     console.log(
       "================= Add Product: Product Management Controller ================="
     );
-    console.log(req.body);
     const request = {
       name: req.body.name,
       brand: req.body.brand,
@@ -86,7 +85,7 @@ const updateProduct = async (req, res) => {
       name: Joi.string().required(),
       brand: Joi.string().required(),
       description: Joi.string().required(),
-      quantity: Joi.number().min(1).required(),
+      quantity: Joi.number().min(0).required(),
       price: Joi.number().min(1).required(),
       available: Joi.boolean().default(true),
       lastModified: Joi.date().required(),
@@ -208,6 +207,9 @@ const fetchProductList = async (req, res) => {
  */
 
 const fetchProductById = async (req, res) => {
+  console.log(
+    "================= Fetch Product By Id: Product Management Controller ================="
+  );
   try {
     const request = {
       id: req.query.id,
@@ -235,6 +237,7 @@ const fetchProductById = async (req, res) => {
     if (_.isEmpty(productDetails)) {
       return res.status(400).send({
         message: responseMessage.PRODUCT_NOT_FOUND,
+        data: [],
       });
     }
 
@@ -250,10 +253,86 @@ const fetchProductById = async (req, res) => {
   }
 };
 
+/**
+ * Controller for Updating Bulk Product
+ */
+
+const updateBulkProduct = async (req, res) => {
+  try {
+    console.log(
+      "================= Update Bulk Product: Product Management Controller ================="
+    );
+    const request = {
+      items: req.body.items,
+    };
+
+    const schema = Joi.object({
+      items: Joi.array().items(
+        Joi.object({
+          productId: Joi.string().required(),
+          quantity: Joi.number().min(1).required(),
+        })
+      ),
+    });
+
+    const validateRequest = schema.validate(request);
+
+    if (validateRequest.error) {
+      return res.status(400).send({
+        message: validateRequest.error.message,
+      });
+    }
+
+    const productIdList = _.map(request.items, "productId");
+    const productQuantityMap = {};
+
+    for (const each of request.items) {
+      productQuantityMap[each.productId] = each.quantity;
+    }
+
+    const productDetails = await Product.find({
+      _id: { $in: productIdList },
+    }).select("available _id quantity");
+
+    const productUnavailable = productDetails.filter((each) => {
+      if (!each.available || each.quantity < productQuantityMap[each._id]) {
+        return each;
+      }
+    });
+
+    if (!_.isEmpty(productUnavailable)) {
+      return res.status(200).send({
+        message: responseMessage.BULK_UPDATE_FAILED,
+        status: false,
+        data: productUnavailable,
+      });
+    }
+
+    //If all product exists then update the quantity
+    for (const each of request.items) {
+      await Product.updateOne(
+        { _id: each.productId },
+        { $inc: { quantity: -each.quantity } }
+      );
+    }
+
+    return res.status(200).send({
+      message: responseMessage.BULK_UPDATE_SUCCESS,
+      status: true,
+    });
+  } catch (err) {
+    console.error("Error while bulk updating product: ", err.message);
+    res.status(500).send({
+      message: responseMessage.ERR_MSG_ISSUE_IN_BULK_PRODUCT_UPDATE_API,
+    });
+  }
+};
+
 export {
   addProduct,
   updateProduct,
   deleteProduct,
   fetchProductList,
   fetchProductById,
+  updateBulkProduct,
 };

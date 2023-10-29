@@ -115,14 +115,10 @@ const login = async (req, res) => {
     }
 
     //Check if user exists or not
-    let startTime = new Date();
     const userExists = await User.findOne(
       { email: request.email, deletedAt: null },
       "userId password"
     );
-    let endTime = new Date();
-    let timeElapsed = endTime - startTime;
-    console.log("DB Time: ", timeElapsed);
 
     if (_.isEmpty(userExists)) {
       return res.status(400).send({
@@ -132,14 +128,10 @@ const login = async (req, res) => {
 
     const userId = userExists.userId;
 
-    startTime = new Date();
     const isPasswordVaild = await bcrypt.compare(
       request.password,
       userExists.password
     );
-    endTime = new Date();
-    timeElapsed = endTime - startTime;
-    console.log("Bcrypt Time: ", timeElapsed);
 
     if (!isPasswordVaild) {
       return res.status(400).send({
@@ -148,16 +140,8 @@ const login = async (req, res) => {
     }
 
     //Generate Access Token
-    startTime = new Date();
     const accessToken = await generateAccessToken(userId);
-    endTime = new Date();
-    timeElapsed = endTime - startTime;
-    console.log("Access Time: ", timeElapsed);
-    startTime = new Date();
     const refreshToken = await generateRefreshToken(userId);
-    endTime = new Date();
-    timeElapsed = endTime - startTime;
-    console.log("Refresh Time: ", timeElapsed);
 
     return res.status(200).send({
       message: responseMessage.LOG_IN_SUCCESS,

@@ -10,6 +10,8 @@ const responseMessage = {
     "Oops! Something went wrong in Product List API",
   ERR_MSG_ISSUE_IN_PRODUCT_DETAILS_API:
     "Oops! Something went wrong in Product Details API",
+  ERR_MSG_ISSUE_IN_BULK_PRODUCT_UPDATE_API:
+    "Oops! Something went wrong in Bulk Product Update API",
 
   //Global
   INVALID_SESSION: "Your session is not valid.",
@@ -28,6 +30,8 @@ const responseMessage = {
   PRODUCT_NOT_FOUND: "Product Not Found !!!",
   PRODUCT_EXIST: "Product already added !!!",
   PRODUCT_MODIFIED: "Conflict. Please refresh the data and try again.",
+  BULK_UPDATE_SUCCESS: "Bulk Product Updated Successfully !!!",
+  BULK_UPDATE_FAILED: "Bulk Product Update Failed !!!",
 };
 
 export default responseMessage;
